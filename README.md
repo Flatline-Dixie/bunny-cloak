@@ -1,12 +1,12 @@
-# Bunnycloak v3.0.0 – Stable Reader
+# Bunnycloak v3.0.1 – Stable Reader
 
 Bunnycloak is a deliberately conservative userscript that masks selected location terms in readable web-page content. It prioritizes page stability: one bounded pass, no mutation observer, no injected controls, no global hotkeys, and no persistent state.
 
 ## What it does
 
-- Redacts a small, high-signal list of location terms in an article or main-content area.
+- Redacts a small, high-signal list of location terms in the main-content area, preferring `<main>` or `role="main"` and then an article.
 - Falls back to the page body when no main-content container exists.
-- Skips links, navigation, forms, controls, editors, code, graphics, and hidden content.
+- Skips anchors, navigation, forms, controls, editors, code, graphics, inert content, closed dialogs, and explicitly hidden content.
 - Stops after 12,000 text nodes so unusually large pages cannot monopolize the tab.
 - Safely exits when there are no active terms, instead of creating a broken regular expression.
 - Runs locally with no network requests or userscript-manager privileges.

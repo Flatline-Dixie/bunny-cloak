@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Project Bunnycloak (Stable Reader)
 // @namespace    https://github.com/flatline/bunny-cloak
-// @version      3.0.0
+// @version      3.0.1
 // @description  Conservative, local-only redaction for readable page content.
 // @author       Flatline
 // @match        http://*/*
@@ -67,8 +67,10 @@
         'select',
         'option',
         'button',
+        'summary',
         'label',
         'form',
+        'dialog:not([open])',
         'code',
         'pre',
         'kbd',
@@ -81,7 +83,8 @@
         '[role="menu"]',
         '[role="navigation"]',
         '[aria-hidden="true"]',
-        '[hidden]'
+        '[hidden]',
+        '[inert]'
     ].join(',');
 
     const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -104,14 +107,16 @@
         if (!parent || typeof parent.closest !== 'function') return false;
         if (parent.closest(SKIP_SELECTOR)) return true;
 
-        // Text inside links may be used as an accessible name or by site logic.
-        if (parent.closest('a[href]')) return true;
+        // Text inside anchors may be used as an accessible name or by site logic.
+        if (parent.closest('a')) return true;
 
         return false;
     }
 
     function redactReadableText() {
-        const root = document.querySelector('article, main, [role="main"]') || document.body;
+        const root = document.querySelector('main, [role="main"]')
+            || document.querySelector('article')
+            || document.body;
         if (!root) return;
 
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
